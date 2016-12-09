@@ -3,8 +3,186 @@
 <head>
 	<meta charset="UTF-8">
 	<title>百度学院7</title>
+	<style>
+		#arrcontent {
+			margin-top: 20px;
+			vertical-align: bottom;
+		}
+		#arrcontent >span {
+			height: 50px;
+			background: #f00;
+			min-width: 50px;
+			text-align: center;
+			color: #fff;
+			/*vertical-align: middle;*/
+			cursor: pointer;
+			display: inline-block;
+			margin: 10px;
+			vertical-align: bottom;
+			float: left;
+		}
+	</style>
 </head>
 <body>
+	<div>
+		<input  id="char" type="text" />
+		<button value="1">左侧入</button>
+		<button value="2">右侧入</button>
+		<button value="3">左侧出</button>
+		<button value="4">右侧出</button>
+		<button value="5">排序</button>
+	</div>
 
+	<div id="arrcontent"></div>
+
+	<script>
+		var arr = [12,50,32,56,100,63];
+		var inputText = document.getElementById("char");
+		//正则匹配，数字
+		var regNum = /[0-9]/;
+		//表单验证
+		function charReg(){
+			var regText = inputText.value;//作用域
+			if(!regText){
+				alert("不能为空");
+				return false;
+			}else if(!regNum.test(regText)){//test用法是 正则对象.test(字符串)!!!!
+				alert("输入的内容必须是数字");
+				return false;
+			}else if(regText<10||regText>100){
+				alert("输入的内容必须在10到100之间");
+				return false;
+			}else if(arr.length>60){
+				alert("队列最多60是个数字，已经放不下了");
+				return false;
+			}else{
+				return true;
+			}
+		}
+		//返回一个255的随机数
+		function rgbRanddom(){
+			return Math.ceil(Math.random()*255);
+		}
+		//渲染数组列表
+		function renderArr(){
+			var html = '';
+			for (var i = 0; i < arr.length; i++) {
+				html+='<span style="height:'+parseInt(arr[i])+'px;background:rgb('+rgbRanddom()+','+rgbRanddom()+','+rgbRanddom()+')">'+arr[i]+'</span>'
+			};
+			var arrcontent = document.getElementById("arrcontent");
+			arrcontent.innerHTML = html;
+		}
+		//左侧入
+		function leftRu(){
+			if(!charReg()) return false;
+			arr.unshift(parseInt(inputText.value));//unshift 从数组第一个添加
+			renderArr()
+		}
+		function rightRu(){
+			if(!charReg()) return false;
+			arr.push(parseInt(inputText.value));//
+			renderArr()
+		}
+		function leftChu(){
+			alert("要删除的数字是"+arr[0]);
+			arr.splice(0,1);
+			renderArr()
+		}
+		function rightChu(){
+			alert("要删除的数字是"+arr[arr.length-1]);
+			arr.splice(arr.length-1,1);
+			renderArr()
+		}
+		//点击本身移除
+		function clickThis(){
+			var arrcontent = document.getElementById("arrcontent");
+			arrcontent.addEventListener('click',function(e){
+				var text = parseInt(e.target.innerText);
+				for(var i=0;i<arr.length;i++){
+					if(text==arr[i]){
+						arr.splice(i,1);
+					}
+				}
+				renderArr();
+			})
+		}
+		//排序算法1 冒泡
+		function paixun(){
+			var oldArr = [];
+			oldArr = arr.slice(0,arr.length);//保存一下之前的数组
+			for(var i=0;i<arr.length;i++){
+				for(var j=i+1;j<arr.length;j++){
+					var item = 0;
+					if(arr[i]>arr[j]){
+						item = arr[i];
+						arr[i] = arr[j];
+						arr[j] = item;
+					}
+				}
+			}
+			var arrcontent = document.getElementById("arrcontent");
+			var span = arrcontent.getElementsByTagName('span');
+			//动画函数调用
+			for(var h = 0;h<span.length;h++){
+				(function(h){
+					divAm(oldArr[h],arr[h],span[h]);
+				})(h)
+			}
+		}
+		//div动画
+		function divAm(oldArr,newArr,ele){
+			if(oldArr<newArr){
+				oldArr++;
+				ele.style.height = oldArr + "px";
+				ele.innerText = oldArr;
+				clearInterval(intTwo);
+				var intOne =setTimeout(function() {  
+                	divAm(oldArr,newArr,ele);
+	            }, 80) ;
+			}
+
+			if(oldArr>newArr){
+				oldArr--;
+				ele.style.height = oldArr + "px";
+				ele.innerText = oldArr;
+				clearInterval(intOne);
+				var intTwo =setTimeout(function() {  
+                	divAm(oldArr,newArr,ele);
+	            }, 80) ;
+			}
+		}
+		//点击按钮变化
+		function allPlay(){
+			var btns = document.getElementsByTagName('button');
+			for(var i=0;i<btns.length;i++){
+				btns[i].addEventListener('click',function(){
+					switch(this.value){
+						case "1"://左侧入
+							leftRu();
+							break;
+						case "2"://右侧入
+							rightRu();
+							break;
+						case "3"://左侧出
+							leftChu();
+							break;
+						case "4"://右侧出
+							rightChu();
+							break;
+						case "5"://排序
+							paixun();
+							break;
+					}
+				})
+			}
+		}
+		function init(){
+			allPlay();
+			clickThis();
+			renderArr();
+		}
+
+		init();
+	</script>
 </body>
 </html>
