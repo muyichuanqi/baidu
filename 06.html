@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>百度学院6</title>
+	<style>
+		#arrcontent {
+			margin-top: 20px;
+			display: table;
+		}
+		#arrcontent >span {
+			/*float: left;*/
+			height: 50px;
+			background: #f00;
+			min-width: 50px;
+			margin-left: 10px;
+			border: 5px #fff solid;
+			text-align: center;
+			display: table-cell;
+			color: #fff;
+			vertical-align: middle;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<input type="text" id="char">
+		<button value="1">左侧入</button>
+		<button value="2">右侧入</button>
+		<button value="3">左侧出</button>
+		<button value="4">右侧出</button>
+	</div>
+
+	<div id="arrcontent"></div>
+
+	<script>
+		var arr = ["10","20","32","56","36","63"];
+		var  inputText = document.getElementById("char");
+		//渲染数组列表
+		function renderArr(){
+			var html = '';
+			for (var i = 0; i < arr.length; i++) {
+				html+='<span>'+arr[i]+'</span>'
+			};
+			var arrcontent = document.getElementById("arrcontent");
+			arrcontent.innerHTML = html;
+		}
+		//左侧入
+		function leftRu(){
+			if(!inputText.value){alert("不能为空");return false;} 
+			arr.unshift(inputText.value);//unshift 从数组第一个添加
+			renderArr()
+		}
+		function rightRu(){
+			if(!inputText.value){alert("不能为空");return false;} 
+			arr.push(inputText.value);//
+			renderArr()
+		}
+		function leftChu(){
+			alert("要删除的数字是"+arr[0]);
+			arr.splice(0,1);
+			renderArr()
+		}
+		function rightChu(){
+			alert("要删除的数字是"+arr[arr.length-1]);
+			arr.splice(arr.length-1,1);
+			renderArr()
+		}
+		//点击本身移除
+		function clickThis(){
+			var arrcontent = document.getElementById("arrcontent");
+			arrcontent.addEventListener('click',function(e){
+				var text = e.target.innerText;
+				for(var i=0;i<arr.length;i++){
+					if(text==arr[i]){
+						arr.splice(i,1);
+					}
+				}
+				renderArr();
+			})
+		}
+		//点击按钮变化
+		function allPlay(){
+			var btns = document.getElementsByTagName('button');
+			for(var i=0;i<btns.length;i++){
+				btns[i].addEventListener('click',function(){
+					switch(this.value){
+						case "1"://左侧入
+							leftRu();
+							break;
+						case "2"://右侧入
+							rightRu();
+							break;
+						case "3"://左侧出
+							leftChu();
+							break;
+						case "4"://右侧出
+							rightChu();
+							break;
+					}
+				})
+			}
+		}
+		function init(){
+			allPlay();
+			clickThis();
+			renderArr();
+		}
+
+		init();
+	</script>
+</body>
+</html>
